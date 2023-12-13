@@ -33,6 +33,7 @@ export const createSwitchStore = <T>(
 
 	const _onOrOff = (v: boolean, data: any) => {
 		let old = _store.get();
+		// intentionally using data only if defined
 		if (data !== undefined) old = { ...old, data };
 		_store.set({ ...old, ...isFlags(!!v) });
 	};
@@ -43,7 +44,7 @@ export const createSwitchStore = <T>(
 
 	return {
 		subscribe: _store.subscribe,
-		get: _store.get,
+		get: _store.get, // extra method outside of Svelte store contract
 		on,
 		off,
 		toggle: () => _store.update((v) => ({ ...v, ...isFlags(!v.isOn) })),
