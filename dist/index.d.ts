@@ -1,15 +1,15 @@
 import { StoreReadable } from '@marianmeres/store';
 export interface SwitchStore<T> extends StoreReadable<{
-    payload: T;
+    data: T;
     isOn: boolean;
     isOff: boolean;
     isOpen: boolean;
     isClosed: boolean;
 }> {
-    on: (payload?: any) => void;
-    off: (payload?: any) => void;
+    on: (data?: any) => void;
+    off: (data?: any) => void;
     toggle: () => void;
-    open: (payload?: any) => void;
-    close: (payload?: any) => void;
+    open: (data?: any) => void;
+    close: (data?: any) => void;
 }
-export declare const createSwitchStore: <T>(initial?: boolean, payload?: T | null) => SwitchStore<T>;
+export declare const createSwitchStore: <T>(initial?: boolean, data?: T | null) => SwitchStore<T>;

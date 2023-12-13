@@ -32,27 +32,27 @@ suite.test('basic', () => {
 	assert(!bs.get().isOn);
 });
 
-suite.test('with payload', () => {
+suite.test('with data', () => {
 	const bs = createSwitchStore<{ foo: string }>(false);
 
 	assert(!bs.get().isOpen);
-	assert(!bs.get().payload);
+	assert(!bs.get().data);
 
 	bs.open({ foo: 'bar' });
 
 	assert(bs.get().isOpen);
-	assert(bs.get().payload.foo === 'bar');
+	assert(bs.get().data.foo === 'bar');
 
 	// we're closing with paylod - legit
 	bs.close({ foo: 'baz' });
 
 	assert(!bs.get().isOpen);
-	assert(bs.get().payload.foo === 'baz');
+	assert(bs.get().data.foo === 'baz');
 
 	bs.open();
 
 	assert(bs.get().isOpen);
-	assert(bs.get().payload.foo === 'baz'); // baz still there
+	assert(bs.get().data.foo === 'baz'); // baz still there
 });
 
 export default suite;

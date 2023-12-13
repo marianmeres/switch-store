@@ -2,44 +2,44 @@ import { StoreReadable, createStore } from '@marianmeres/store';
 
 export interface SwitchStore<T>
 	extends StoreReadable<{
-		payload: T;
+		data: T;
 		isOn: boolean;
 		isOff: boolean;
 		// aliases
 		isOpen: boolean;
 		isClosed: boolean;
 	}> {
-	on: (payload?: any) => void;
-	off: (payload?: any) => void;
+	on: (data?: any) => void;
+	off: (data?: any) => void;
 	toggle: () => void;
-	open: (payload?: any) => void;
-	close: (payload?: any) => void;
+	open: (data?: any) => void;
+	close: (data?: any) => void;
 }
 
 export const createSwitchStore = <T>(
 	initial: boolean = false,
-	payload: T | null = null
+	data: T | null = null
 ): SwitchStore<T> => {
 	const isFlags = (v: boolean) => ({ isOn: !!v, isOpen: !!v, isOff: !v, isClosed: !v });
 
 	const _store = createStore<{
-		payload: T;
+		data: T;
 		isOn: boolean;
 		isOff: boolean;
 		// alias
 		isOpen: boolean;
 		isClosed: boolean;
-	}>({ ...isFlags(initial), payload });
+	}>({ ...isFlags(initial), data });
 
-	const _onOrOff = (v: boolean, payload: any) => {
+	const _onOrOff = (v: boolean, data: any) => {
 		let old = _store.get();
-		if (payload !== undefined) old = { ...old, payload };
+		if (data !== undefined) old = { ...old, data };
 		_store.set({ ...old, ...isFlags(!!v) });
 	};
 
-	const on = (payload = undefined) => _onOrOff(true, payload);
+	const on = (data = undefined) => _onOrOff(true, data);
 
-	const off = (payload = undefined) => _onOrOff(false, payload);
+	const off = (data = undefined) => _onOrOff(false, data);
 
 	return {
 		subscribe: _store.subscribe,

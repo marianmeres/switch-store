@@ -1,17 +1,17 @@
 # @marianmeres/switch-store
 
-Simple DRY [store](https://github.com/marianmeres/store) utility for keeping boolean flag along with optional payload.
+Simple DRY [store](https://github.com/marianmeres/store) utility for a boolean flag along with optional data.
 
 ## Install
 
 ```shell
-$ npm i @marianmeres/Simple utility for keeping boolean flag along with optional payload.-store
+$ npm i @marianmeres/switch-store
 ```
 
 ## Basic example
 
 ```javascript
-const sidebar = createBooleanStore<{ component: any }>(false, { component: Foo });
+const sidebar = createSwitchStore(false, { component: Foo } /* whatever */);
 
 // "open", "close" are aliases to "on" and "off"
 
@@ -21,14 +21,14 @@ sidebar.subscribe((value) => {
 	//     isOff: true,
 	//     isOpen: false,
 	//     isClosed: true,
-	//     payload: { component: Foo }
+	//     data: { component: Foo }
 	// }
 });
 
 // api
 store.subscribe((value) => ...)
-store.on(payload?); // or open
-store.off(payload?); // or close
+store.on(data?); // or open
+store.off(data?); // or close
 store.toggle();
 
 ```
@@ -39,7 +39,7 @@ is not dependant on Svelte (just compatible).
 ```sveltehtml
 {#if $sidebar.isOpen}
     <Sidebar>
-        <svelte:component this={$sidebar.payload.component} />
+        <svelte:component this={$sidebar.data.component} />
     </Sidebar>
 {/if}
 
