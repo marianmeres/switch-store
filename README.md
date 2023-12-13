@@ -1,20 +1,39 @@
-# @marianmeres/boolean-store
+# @marianmeres/switch-store
 
 Simple DRY [store](https://github.com/marianmeres/store) utility for keeping boolean flag along with optional payload.
 
 ## Install
 
 ```shell
-$ npm i @marianmeres/boolean-store
+$ npm i @marianmeres/Simple utility for keeping boolean flag along with optional payload.-store
 ```
 
 ## Basic example
 
 ```javascript
-const sidebar = createBooleanStore(false, { component: Foo });
+const sidebar = createBooleanStore<{ component: any }>(false, { component: Foo });
+
+// "open", "close" are aliases to "on" and "off"
+
+sidebar.subscribe((value) => {
+	// value -> {
+	//     isOn: false,
+	//     isOff: true,
+	//     isOpen: false,
+	//     isClosed: true,
+	//     payload: { component: Foo }
+	// }
+});
+
+// api
+store.subscribe((value) => ...)
+store.on(payload?); // or open
+store.off(payload?); // or close
+store.toggle();
+
 ```
 
-Using Svelte here as an example of consuming the store, but the store itself
+Using Svelte here as an example of consuming the store. The store itself
 is not dependant on Svelte (just compatible).
 
 ```sveltehtml

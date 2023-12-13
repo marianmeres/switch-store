@@ -1,10 +1,13 @@
 import { StoreReadable, createStore } from '@marianmeres/store';
 
-export interface BooleanStore<T>
+export interface SwitchStore<T>
 	extends StoreReadable<{
 		payload: T;
 		isOn: boolean;
+		isOff: boolean;
+		// aliases
 		isOpen: boolean;
+		isClosed: boolean;
 	}> {
 	on: (payload?: any) => void;
 	off: (payload?: any) => void;
@@ -13,17 +16,19 @@ export interface BooleanStore<T>
 	close: (payload?: any) => void;
 }
 
-export const createBooleanStore = <T>(
+export const createSwitchStore = <T>(
 	initial: boolean = false,
 	payload: T | null = null
-): BooleanStore<T> => {
-	const isFlags = (v: boolean) => ({ isOn: !!v, isOpen: !!v });
+): SwitchStore<T> => {
+	const isFlags = (v: boolean) => ({ isOn: !!v, isOpen: !!v, isOff: !v, isClosed: !v });
 
 	const _store = createStore<{
 		payload: T;
 		isOn: boolean;
+		isOff: boolean;
 		// alias
 		isOpen: boolean;
+		isClosed: boolean;
 	}>({ ...isFlags(initial), payload });
 
 	const _onOrOff = (v: boolean, payload: any) => {

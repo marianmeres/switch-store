@@ -1,8 +1,10 @@
 import { StoreReadable } from '@marianmeres/store';
-export interface BooleanStore<T> extends StoreReadable<{
+export interface SwitchStore<T> extends StoreReadable<{
     payload: T;
     isOn: boolean;
+    isOff: boolean;
     isOpen: boolean;
+    isClosed: boolean;
 }> {
     on: (payload?: any) => void;
     off: (payload?: any) => void;
@@ -10,4 +12,4 @@ export interface BooleanStore<T> extends StoreReadable<{
     open: (payload?: any) => void;
     close: (payload?: any) => void;
 }
-export declare const createBooleanStore: <T>(initial?: boolean, payload?: T | null) => BooleanStore<T>;
+export declare const createSwitchStore: <T>(initial?: boolean, payload?: T | null) => SwitchStore<T>;
