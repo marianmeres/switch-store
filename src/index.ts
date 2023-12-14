@@ -20,7 +20,7 @@ export const createSwitchStore = <T>(
 	initial: boolean = false,
 	data: T | null = null
 ): SwitchStore<T> => {
-	const isFlags = (v: boolean) => ({ isOn: !!v, isOpen: !!v, isOff: !v, isClosed: !v });
+	const _isFlags = (v: boolean) => ({ isOn: v, isOpen: v, isOff: !v, isClosed: !v });
 
 	const _store = createStore<{
 		data: T;
@@ -29,13 +29,13 @@ export const createSwitchStore = <T>(
 		// alias
 		isOpen: boolean;
 		isClosed: boolean;
-	}>({ ...isFlags(initial), data });
+	}>({ ..._isFlags(!!initial), data });
 
 	const _onOrOff = (v: boolean, data: any) => {
 		let old = _store.get();
-		// intentionally using data only if defined
+		// intentionally using data only if defined so it is not reset on switching
 		if (data !== undefined) old = { ...old, data };
-		_store.set({ ...old, ...isFlags(!!v) });
+		_store.set({ ...old, ..._isFlags(!!v) });
 	};
 
 	const on = (data = undefined) => _onOrOff(true, data);
@@ -47,7 +47,7 @@ export const createSwitchStore = <T>(
 		get: _store.get, // extra method outside of Svelte store contract
 		on,
 		off,
-		toggle: () => _store.update((v) => ({ ...v, ...isFlags(!v.isOn) })),
+		toggle: () => _store.update((v) => ({ ...v, ..._isFlags(!v.isOn) })),
 		// aliases
 		open: on,
 		close: off,

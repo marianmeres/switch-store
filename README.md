@@ -1,6 +1,6 @@
 # @marianmeres/switch-store
 
-Simple DRY [store](https://github.com/marianmeres/store) utility for a boolean flag along with optional data.
+Tiny DRY [store](https://github.com/marianmeres/store) utility for a boolean flag along with optional data.
 
 ## Install
 
@@ -13,7 +13,7 @@ $ npm i @marianmeres/switch-store
 ```javascript
 const sidebar = createSwitchStore(false, { component: Foo } /* whatever */);
 
-// "open", "close" are aliases to "on" and "off"
+// "open" and "close" are aliases to "on" and "off"
 
 sidebar.subscribe((value) => {
 	// value -> {
@@ -33,7 +33,7 @@ store.toggle();
 
 ```
 
-Using Svelte here as an example of consuming the store. The store itself
+Using Svelte here just as an example of consuming the store. The store itself
 is not dependant on Svelte (just compatible).
 
 ```sveltehtml
