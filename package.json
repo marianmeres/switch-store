@@ -26,7 +26,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/marianmeres/boolean-store.git"
+		"url": "git+https://github.com/marianmeres/switch-store.git"
 	},
 	"keywords": [
 		"store"
@@ -34,9 +34,9 @@
 	"author": "Marian Meres <marian@meres.sk>",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/marianmeres/boolean-store/issues"
+		"url": "https://github.com/marianmeres/switch-store/issues"
 	},
-	"homepage": "https://github.com/marianmeres/boolean-store#readme",
+	"homepage": "https://github.com/marianmeres/switch-store#readme",
 	"devDependencies": {
 		"@marianmeres/clog": "^1.0.1",
 		"@marianmeres/release": "^1.1.2",

@@ -12,7 +12,7 @@ export default [
 	{
 		input: 'src/index.ts',
 		output: {
-			name: 'boolean-store',
+			name: 'switch-store',
 			file: pkg.browser,
 			format: 'umd',
 		},
