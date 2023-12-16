@@ -1,8 +1,8 @@
-import path from 'node:path';
-import { strict as assert } from 'node:assert';
-import { fileURLToPath } from 'node:url';
 import { createClog } from '@marianmeres/clog';
 import { TestRunner } from '@marianmeres/test-runner';
+import { strict as assert } from 'node:assert';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createSwitchStore } from '../src/index.js';
 
 const clog = createClog(path.basename(fileURLToPath(import.meta.url)));
