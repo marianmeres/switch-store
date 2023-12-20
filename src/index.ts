@@ -38,9 +38,16 @@ export const createSwitchStore = <T>(
 		_store.set({ ...old, ..._isFlags(!!v) });
 	};
 
-	const on = (data = undefined) => _onOrOff(true, data);
+	// const on = (data = undefined) => _onOrOff(true, data);
+	// const off = (data = undefined) => _onOrOff(false, data);
 
-	const off = (data = undefined) => _onOrOff(false, data);
+	// somewhat dirty: point is, most of the time (but not always), it is very handy
+	// to call on/off like: on:click={switch.open}, where the first argument is
+	// Event which must be ignored... so, just hacking here to dynamically - based
+	// on the number of args - pick either first or second arg as "data"
+	const _extractData = (...args: any[]) => args[args.length > 1 ? 1 : 0];
+	const on = (...args: any[]) => _onOrOff(true, _extractData(...args));
+	const off = (...args: any[]) => _onOrOff(false, _extractData(...args));
 
 	return {
 		subscribe: _store.subscribe,
