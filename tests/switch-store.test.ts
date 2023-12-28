@@ -70,6 +70,26 @@ suite.test('undefined state works', () => {
 	assert(!bs.get().isUndefined);
 });
 
+suite.test('toggle unset', () => {
+	const bs = createSwitchStore<undefined>(undefined);
+
+	assert(!bs.get().isOn);
+	assert(bs.get().isOff);
+	assert(bs.get().isUndefined);
+
+	bs.toggleUnset();
+
+	assert(bs.get().isOn);
+	assert(!bs.get().isOff);
+	assert(!bs.get().isUndefined);
+
+	bs.toggleUnset();
+
+	assert(!bs.get().isOn);
+	assert(bs.get().isOff);
+	assert(bs.get().isUndefined);
+});
+
 suite.test('with data', () => {
 	const bs = createSwitchStore<{ foo: string }>(false);
 

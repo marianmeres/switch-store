@@ -9,8 +9,9 @@ export interface SwitchStore<T> extends StoreReadable<{
 }> {
     on: (data?: any) => void;
     off: (data?: any) => void;
-    unset: () => void;
+    unset: (data?: any) => void;
     toggle: () => void;
+    toggleUnset: () => void;
     open: (data?: any) => void;
     close: (data?: any) => void;
 }

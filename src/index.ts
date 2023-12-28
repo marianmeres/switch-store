@@ -12,8 +12,9 @@ export interface SwitchStore<T>
 	}> {
 	on: (data?: any) => void;
 	off: (data?: any) => void;
-	unset: () => void;
+	unset: (data?: any) => void;
 	toggle: () => void;
+	toggleUnset: () => void;
 	open: (data?: any) => void;
 	close: (data?: any) => void;
 }
@@ -66,6 +67,7 @@ export const createSwitchStore = <T>(
 		off,
 		unset,
 		toggle: () => _store.update((v) => ({ ...v, ..._isFlags(!v.isOn) })),
+		toggleUnset: () => (_store.get().isOn ? unset() : on()),
 		// aliases
 		open: on,
 		close: off,
