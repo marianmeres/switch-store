@@ -1,6 +1,11 @@
 # @marianmeres/switch-store
 
-Tiny DRY [store](https://github.com/marianmeres/store) utility for a boolean flag along with optional data.
+Tiny DRY [store](https://github.com/marianmeres/store) utility for a 3 state
+flag (`boolean` values and `undefined`) along with arbitrary data.
+
+You can distinguish between falsey `false` and `undefined` state if you need to by checking
+explicitly the `isUndefined` key. The `undefined` state is otherwise always evaluated as
+`isOff`.
 
 ## Install
 
@@ -19,6 +24,7 @@ sidebar.subscribe((value) => {
 	// value -> {
 	//     isOn: false,
 	//     isOff: true,
+	//     isUndefined: false,
 	//     isOpen: false,
 	//     isClosed: true,
 	//     data: { component: Foo }
@@ -29,6 +35,7 @@ sidebar.subscribe((value) => {
 store.subscribe((value) => ...)
 store.on(data?); // or open
 store.off(data?); // or close
+store.unset(); // will set the internal flag to `undefined`
 store.toggle();
 
 ```

@@ -32,6 +32,44 @@ suite.test('basic', () => {
 	assert(!bs.get().isOn);
 });
 
+suite.test('undefined state works', () => {
+	const bs = createSwitchStore<undefined>(undefined);
+
+	assert(!bs.get().isOn);
+	assert(bs.get().isOff);
+	assert(bs.get().isUndefined);
+
+	bs.toggle();
+
+	assert(bs.get().isOn);
+	assert(!bs.get().isOff);
+	assert(!bs.get().isUndefined);
+
+	bs.unset();
+
+	assert(!bs.get().isOn);
+	assert(bs.get().isOff);
+	assert(bs.get().isUndefined);
+
+	bs.off();
+
+	assert(!bs.get().isOn);
+	assert(bs.get().isOff);
+	assert(!bs.get().isUndefined);
+
+	bs.unset();
+
+	assert(!bs.get().isOn);
+	assert(bs.get().isOff);
+	assert(bs.get().isUndefined);
+
+	bs.on();
+
+	assert(bs.get().isOn);
+	assert(!bs.get().isOff);
+	assert(!bs.get().isUndefined);
+});
+
 suite.test('with data', () => {
 	const bs = createSwitchStore<{ foo: string }>(false);
 
@@ -52,6 +90,12 @@ suite.test('with data', () => {
 	bs.open();
 
 	assert(bs.get().isOpen);
+	assert(bs.get().data.foo === 'baz'); // baz still there
+
+	bs.unset();
+
+	assert(!bs.get().isOpen);
+	assert(bs.get().isUndefined);
 	assert(bs.get().data.foo === 'baz'); // baz still there
 });
 
