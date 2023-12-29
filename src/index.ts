@@ -67,12 +67,27 @@ export const createSwitchStore = <T>(
 
 	// somewhat dirty: point is, most of the time (but not always), it is very handy
 	// to call on/off like: on:click={switch.open}, where the first argument is
-	// Event which must be ignored here... so, just hacking here to dynamically - based
-	// on the number of args - pick either first or second arg as "data"
-	const _extractData = (...args: any[]) => args[args.length > 1 ? 1 : 0];
-	const on = (...args: any[]) => _onOrOff(true, _extractData(...args));
-	const off = (...args: any[]) => _onOrOff(false, _extractData(...args));
-	const unset = (...args: any[]) => _onOrOff(undefined, _extractData(...args));
+	// Event which should be ignored here. So, hacking below to dynamically - based
+	// on the number of args, or by inspecting the arg - pick either first or second
+	// arg as "data" or ignore altogether
+	const _extractData = (args: any[]) => {
+		// return early with second, if more than one...
+		if (args.length > 1) return args[1];
+		// return early with what's available, if falsey
+		if (!args[0]) return args[0];
+		// not data for sure
+		if (args[0] instanceof Event) return null;
+		// looks not like a data
+		if (['target', 'bubbles', 'cancelable', 'isTrusted'].every((k) => k in args[0])) {
+			return null;
+		}
+		// probably data
+		return args[0];
+	};
+
+	const on = (...args: any[]) => _onOrOff(true, _extractData(args));
+	const off = (...args: any[]) => _onOrOff(false, _extractData(args));
+	const unset = (...args: any[]) => _onOrOff(undefined, _extractData(args));
 
 	return {
 		subscribe: _store.subscribe,
