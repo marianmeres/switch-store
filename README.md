@@ -1,7 +1,7 @@
 # @marianmeres/switch-store
 
 Tiny DRY [store](https://github.com/marianmeres/store) utility for a 3 state
-flag (`true`, `false` and `undefined`) along with arbitrary data.
+value (`true`, `false` and `undefined`) along with arbitrary data.
 
 You can distinguish between falsey `false` and `undefined` states if you need to by checking
 explicitly the `isUndefined` store prop. The `undefined` state is otherwise always evaluated as

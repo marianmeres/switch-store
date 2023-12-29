@@ -35,7 +35,7 @@ export const createSwitchStore = <T>(
 	data: T | null = null,
 	createStoreOptions: CreateStoreOptions<SwitchStoreInternalValue<T>> | null = null
 ): SwitchStore<T> => {
-	// internally keeping value as null, even being refered as undefined
+	// internally keeping value as `null`, even being referred as `undefined`
 	const _value = (v: any) => (v === undefined || v === null ? null : !!v);
 
 	const _internal = createStore<SwitchStoreInternalValue<T>>(
@@ -53,7 +53,7 @@ export const createSwitchStore = <T>(
 		isClosed: boolean;
 	}>([_internal], ([v]) => {
 		const isOn = v.value === true;
-		const isUndefined = v.value === null;
+		const isUndefined = v.value === null; // internally storing always as `null`
 		const isOff = !isOn;
 		return { data: v.data, isOn, isOff, isUndefined, isOpen: isOn, isClosed: isOff };
 	});
