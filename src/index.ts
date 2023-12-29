@@ -1,15 +1,26 @@
-import { StoreReadable, createStore } from '@marianmeres/store';
+import {
+	CreateStoreOptions,
+	StoreReadable,
+	createDerivedStore,
+	createStore,
+} from '@marianmeres/store';
 
-export interface SwitchStore<T>
-	extends StoreReadable<{
-		data: T;
-		isOn: boolean;
-		isOff: boolean;
-		isUndefined: boolean;
-		// aliases
-		isOpen: boolean;
-		isClosed: boolean;
-	}> {
+interface SwitchStoreInternalValue<T> {
+	value: boolean | null;
+	data: T | null;
+}
+
+interface SwitchStoreDerivedValue<T> {
+	data: T | null;
+	isOn: boolean;
+	isOff: boolean;
+	isUndefined: boolean;
+	// alias
+	isOpen: boolean;
+	isClosed: boolean;
+}
+
+export interface SwitchStore<T> extends StoreReadable<SwitchStoreDerivedValue<T>> {
 	on: (data?: any) => void;
 	off: (data?: any) => void;
 	unset: (data?: any) => void;
@@ -21,17 +32,18 @@ export interface SwitchStore<T>
 
 export const createSwitchStore = <T>(
 	initial?: boolean | undefined,
-	data: T | null = null
+	data: T | null = null,
+	createStoreOptions: CreateStoreOptions<SwitchStoreInternalValue<T>> | null = null
 ): SwitchStore<T> => {
-	const _isFlags = (v: boolean | undefined) => {
-		const isOn = v === true;
-		const isUndefined = v === undefined;
-		// any other than true is considered off
-		const isOff = !isOn;
-		return { isOn, isOff, isUndefined, isOpen: isOn, isClosed: isOff };
-	};
+	// internally keeping value as null, even being refered as undefined
+	const _value = (v: any) => (v === undefined || v === null ? null : !!v);
 
-	const _store = createStore<{
+	const _internal = createStore<SwitchStoreInternalValue<T>>(
+		{ value: _value(initial), data },
+		createStoreOptions
+	);
+
+	const _store = createDerivedStore<{
 		data: T;
 		isOn: boolean;
 		isOff: boolean;
@@ -39,17 +51,19 @@ export const createSwitchStore = <T>(
 		// alias
 		isOpen: boolean;
 		isClosed: boolean;
-	}>({ ..._isFlags(initial), data });
+	}>([_internal], ([v]) => {
+		const isOn = v.value === true;
+		const isUndefined = v.value === null;
+		const isOff = !isOn;
+		return { data: v.data, isOn, isOff, isUndefined, isOpen: isOn, isClosed: isOff };
+	});
 
 	const _onOrOff = (v: boolean | undefined, data: any) => {
-		let old = _store.get();
+		let old = _internal.get();
 		// intentionally using data only if defined so it is not reset on switching
 		if (data !== undefined) old = { ...old, data };
-		_store.set({ ...old, ..._isFlags(v) });
+		_internal.set({ ...old, value: _value(v) });
 	};
-
-	// const on = (data = undefined) => _onOrOff(true, data);
-	// const off = (data = undefined) => _onOrOff(false, data);
 
 	// somewhat dirty: point is, most of the time (but not always), it is very handy
 	// to call on/off like: on:click={switch.open}, where the first argument is
@@ -66,8 +80,8 @@ export const createSwitchStore = <T>(
 		on,
 		off,
 		unset,
-		toggle: () => _store.update((v) => ({ ...v, ..._isFlags(!v.isOn) })),
-		toggleUnset: () => (_store.get().isOn ? unset() : on()),
+		toggle: () => _internal.update((v) => ({ ...v, value: _value(!v.value) })),
+		toggleUnset: () => (_internal.get().value ? unset() : on()),
 		// aliases
 		open: on,
 		close: off,

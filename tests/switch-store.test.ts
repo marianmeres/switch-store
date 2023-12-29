@@ -11,112 +11,169 @@ const suite = new TestRunner(path.basename(fileURLToPath(import.meta.url)));
 suite.test('basic', () => {
 	const bs = createSwitchStore<undefined>(true);
 
-	assert(bs.get().isOn);
-	assert(bs.get().isOpen);
-	assert(!bs.get().isOff);
-	assert(!bs.get().isClosed);
+	bs.subscribe((v) => {
+		assert(v.isOn);
+		assert(v.isOpen);
+		assert(!v.isOff);
+		assert(!v.isClosed);
+	})();
 
 	bs.toggle();
 
-	assert(!bs.get().isOn);
-	assert(!bs.get().isOpen);
-	assert(bs.get().isOff);
-	assert(bs.get().isClosed);
+	bs.subscribe((v) => {
+		assert(!v.isOn);
+		assert(!v.isOpen);
+		assert(v.isOff);
+		assert(v.isClosed);
+	})();
 
 	bs.on();
 
-	assert(bs.get().isOn);
+	bs.subscribe((v) => {
+		assert(v.isOn);
+	})();
 
 	bs.close();
 
-	assert(!bs.get().isOn);
+	bs.subscribe((v) => {
+		assert(!v.isOn);
+	})();
 });
 
 suite.test('undefined state works', () => {
-	const bs = createSwitchStore<undefined>(undefined);
+	const bs = createSwitchStore(undefined);
 
-	assert(!bs.get().isOn);
-	assert(bs.get().isOff);
-	assert(bs.get().isUndefined);
+	bs.subscribe((v) => {
+		assert(v.isOff);
+		assert(v.isUndefined);
+	})();
 
 	bs.toggle();
 
-	assert(bs.get().isOn);
-	assert(!bs.get().isOff);
-	assert(!bs.get().isUndefined);
+	bs.subscribe((v) => {
+		assert(v.isOn);
+		assert(!v.isOff);
+		assert(!v.isUndefined);
+	})();
 
 	bs.unset();
 
-	assert(!bs.get().isOn);
-	assert(bs.get().isOff);
-	assert(bs.get().isUndefined);
+	bs.subscribe((v) => {
+		assert(!v.isOn);
+		assert(v.isOff);
+		assert(v.isUndefined);
+	})();
 
 	bs.off();
 
-	assert(!bs.get().isOn);
-	assert(bs.get().isOff);
-	assert(!bs.get().isUndefined);
+	bs.subscribe((v) => {
+		assert(!v.isOn);
+		assert(v.isOff);
+		assert(!v.isUndefined);
+	})();
 
 	bs.unset();
 
-	assert(!bs.get().isOn);
-	assert(bs.get().isOff);
-	assert(bs.get().isUndefined);
+	bs.subscribe((v) => {
+		assert(!v.isOn);
+		assert(v.isOff);
+		assert(v.isUndefined);
+	})();
 
 	bs.on();
 
-	assert(bs.get().isOn);
-	assert(!bs.get().isOff);
-	assert(!bs.get().isUndefined);
+	bs.subscribe((v) => {
+		assert(v.isOn);
+		assert(!v.isOff);
+		assert(!v.isUndefined);
+	})();
 });
 
 suite.test('toggle unset', () => {
 	const bs = createSwitchStore<undefined>(undefined);
 
-	assert(!bs.get().isOn);
-	assert(bs.get().isOff);
-	assert(bs.get().isUndefined);
+	bs.subscribe((v) => {
+		assert(!v.isOn);
+		assert(v.isOff);
+		assert(v.isUndefined);
+	})();
 
 	bs.toggleUnset();
 
-	assert(bs.get().isOn);
-	assert(!bs.get().isOff);
-	assert(!bs.get().isUndefined);
+	bs.subscribe((v) => {
+		assert(v.isOn);
+		assert(!v.isOff);
+		assert(!v.isUndefined);
+	})();
 
 	bs.toggleUnset();
 
-	assert(!bs.get().isOn);
-	assert(bs.get().isOff);
-	assert(bs.get().isUndefined);
+	bs.subscribe((v) => {
+		assert(!v.isOn);
+		assert(v.isOff);
+		assert(v.isUndefined);
+	})();
 });
 
 suite.test('with data', () => {
 	const bs = createSwitchStore<{ foo: string }>(false);
 
-	assert(!bs.get().isOpen);
-	assert(!bs.get().data);
+	bs.subscribe((v) => {
+		assert(!v.isOn);
+		assert(!v.data);
+	})();
 
 	bs.open({ foo: 'bar' });
 
-	assert(bs.get().isOpen);
-	assert(bs.get().data.foo === 'bar');
+	bs.subscribe((v) => {
+		assert(v.isOn);
+		assert(v.data?.foo === 'bar');
+	})();
 
 	// we're closing with paylod - legit
 	bs.close({ foo: 'baz' });
 
-	assert(!bs.get().isOpen);
-	assert(bs.get().data.foo === 'baz');
+	bs.subscribe((v) => {
+		assert(!v.isOn);
+		assert(v.data?.foo === 'baz');
+	})();
 
 	bs.open();
 
-	assert(bs.get().isOpen);
-	assert(bs.get().data.foo === 'baz'); // baz still there
+	bs.subscribe((v) => {
+		assert(v.isOn);
+		assert(v.data?.foo === 'baz'); // baz still there
+	})();
 
 	bs.unset();
 
-	assert(!bs.get().isOpen);
-	assert(bs.get().isUndefined);
-	assert(bs.get().data.foo === 'baz'); // baz still there
+	bs.subscribe((v) => {
+		assert(!v.isOn);
+		assert(v.isUndefined);
+		assert(v.data?.foo === 'baz'); // baz still there
+	})();
+});
+
+suite.test('with data and persistence', () => {
+	let storage: any = null;
+	const bs = createSwitchStore<{ foo: string }>(
+		undefined,
+		{ foo: 'bar' },
+		{ persist: (v) => (storage = v) }
+	);
+
+	const unsub = bs.subscribe((v) => {});
+
+	// internal structure is stored, not the isXyz flags
+	assert(storage.data.foo === 'bar');
+	assert(storage.value === null); // null, not undefined
+
+	bs.open({ foo: 'baz' });
+
+	assert(storage.data.foo === 'baz');
+	assert(storage.value === true);
+
+	unsub();
 });
 
 export default suite;
