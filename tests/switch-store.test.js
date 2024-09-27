@@ -1,15 +1,15 @@
-import { createClog } from '@marianmeres/clog';
-import { TestRunner } from '@marianmeres/test-runner';
-import { strict as assert } from 'node:assert';
 import path from 'node:path';
+import { strict as assert } from 'node:assert';
+import { TestRunner } from '@marianmeres/test-runner';
 import { fileURLToPath } from 'node:url';
-import { createSwitchStore } from '../src/index.js';
+import { createSwitchStore } from '../dist/index.js';
+import { createClog } from '@marianmeres/clog';
 
 const clog = createClog(path.basename(fileURLToPath(import.meta.url)));
 const suite = new TestRunner(path.basename(fileURLToPath(import.meta.url)));
 
 suite.test('basic', () => {
-	const bs = createSwitchStore<undefined>(true);
+	const bs = createSwitchStore(true);
 
 	bs.subscribe((v) => {
 		assert(v.isOn);
@@ -90,7 +90,7 @@ suite.test('undefined state works', () => {
 });
 
 suite.test('toggle unset', () => {
-	const bs = createSwitchStore<undefined>(undefined);
+	const bs = createSwitchStore(undefined);
 
 	bs.subscribe((v) => {
 		assert(!v.isOn);
@@ -116,7 +116,7 @@ suite.test('toggle unset', () => {
 });
 
 suite.test('with data', () => {
-	const bs = createSwitchStore<{ foo: string }>(false);
+	const bs = createSwitchStore(false);
 
 	bs.subscribe((v) => {
 		assert(!v.isOn);
@@ -155,8 +155,8 @@ suite.test('with data', () => {
 });
 
 suite.test('with data and persistence', () => {
-	let storage: any = null;
-	const bs = createSwitchStore<{ foo: string }>(
+	let storage = null;
+	const bs = createSwitchStore(
 		undefined,
 		{ foo: 'bar' },
 		{ persist: (v) => (storage = v) }

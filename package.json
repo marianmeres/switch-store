@@ -19,8 +19,10 @@
 		"prettier": "prettier --write \"{src,tests}/**/*.{js,ts,json}\"",
 		"release": "release -v minor",
 		"release:patch": "release -v patch",
-		"test": "node --loader ts-node/esm tests/index.ts",
-		"test:watch": "nodemon --delay 0.5 -q -w \"src/**/*.*\" -w \"tests/**/*.*\" -x \"node --loader ts-node/esm tests/index.ts\" --",
+		"xxx-test": "node --loader ts-node/esm tests/index.ts",
+		"xxx-test:watch": "nodemon --delay 0.5 -q -w \"src/**/*.*\" -w \"tests/**/*.*\" -x \"node --loader ts-node/esm tests/index.ts\" --",
+		"test": "test-runner",
+		"test:watch": "nodemon -q -w \"src/**/*.*\" -w \"tests/**/*.*\" -x test-runner --",
 		"build": "npm run clean && rollup -c",
 		"dev": "npm run clean && rollup -c -w"
 	},
@@ -56,6 +58,6 @@
 		"typescript": "^5.3.3"
 	},
 	"dependencies": {
-		"@marianmeres/store": "^1.3.0"
+		"@marianmeres/store": "^1.6.3"
 	}
 }

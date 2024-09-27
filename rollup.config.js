@@ -1,42 +1,25 @@
-import typescript from '@rollup/plugin-typescript';
-import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import resolve from '@rollup/plugin-node-resolve';
 import terser from '@rollup/plugin-terser';
+import typescript from '@rollup/plugin-typescript';
 import fs from 'node:fs';
-// import dts from "rollup-plugin-dts";
 
 const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 
-export default [
-	// browser-friendly UMD build
-	{
-		input: 'src/index.ts',
-		output: {
-			name: 'switch-store',
-			file: pkg.browser,
-			format: 'umd',
-		},
-		plugins: [
-			resolve(), // so Rollup can find `lodash`
-			commonjs(), // so Rollup can convert `ms` to an ES module
-			typescript(), // so Rollup can convert TypeScript to JavaScript
-			terser(),
-		],
-	},
+const plugins = [resolve(), commonjs(), typescript(), terser()];
 
+export default [
 	{
 		input: 'src/index.ts',
-		external: [],
-		plugins: [typescript(), commonjs(), resolve(), terser()],
+		output: { name: 'store', file: pkg.browser, format: 'umd' },
+		plugins,
+	},
+	{
+		input: 'src/index.ts',
+		plugins,
 		output: [
 			{ file: pkg.main, format: 'cjs' },
 			{ file: pkg.module, format: 'es' },
 		],
 	},
-
-	// {
-	// 	input: "./dist/index.d.ts",
-	// 	output: [{ file: "./dist/index.d.ts", format: "es" }],
-	// 	plugins: [dts()],
-	// },
 ];
